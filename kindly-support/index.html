@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buy Me a Tesla</title>
-  <link rel="icon" href="favicon.ico" type="image/x-icon">
-  <!-- OR -->
   <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" type="image/png">
   <base href="/kindly-support/">
 
@@ -17,85 +15,119 @@
     }
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f4f4;
+      background-color: #f9f9f9;
       color: #333;
       text-align: center;
-      padding: 20px;
+      padding: 2rem;
     }
+
     .container {
       max-width: 800px;
       margin: auto;
     }
+
     .tesla-img {
       width: 100%;
+      max-width: 540px;
       height: auto;
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 20px;
-      image-rendering: crisp-edges;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+      animation: float 2.5s ease-in-out infinite;
     }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
     h1 {
-      font-size: 2.5rem;
-      margin-bottom: 10px;
+      font-size: 2.3rem;
+      margin: 1rem 0 0.5rem;
+      color: #333;
     }
+
     p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+      color: #555;
     }
+
     .toggle-buttons {
       display: flex;
       justify-content: center;
       flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 20px;
+      gap: 16px;
+      margin-bottom: 30px;
     }
+
     button {
-      padding: 12px 24px;
-      font-size: 1rem;
+      padding: 14px 28px;
+      font-size: 1.05rem;
       border: none;
-      border-radius: 30px;
+      border-radius: 8px;
       cursor: pointer;
-      background-color: #ff4d4f;
+      background-color: #007BFF;
       color: white;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     }
+
     button:hover {
-      background-color: #d9363e;
+      background-color: #0056b3;
       transform: translateY(-2px);
     }
+
+    .donation-buttons button {
+      background-color: #28a745;
+      margin: 0 10px;
+    }
+
+    .donation-buttons button:nth-child(2) {
+      background-color: #dc3545;
+    }
+
     .payment-section {
       display: none;
       opacity: 0;
       transition: opacity 0.5s ease-in-out;
     }
+
     .visible {
       display: block;
       opacity: 1;
     }
+
     iframe {
       border: none;
       margin-top: 20px;
     }
+
     .wallet-instructions {
       font-size: 0.95rem;
       margin-top: 40px;
-      color: #555;
+      color: #666;
       line-height: 1.6;
     }
+
     .wallet-address {
       font-weight: bold;
-      word-break: break-all;
+      word-break: break-word;
+      color: #333;
     }
+
     .usdt-reminder {
       font-size: 0.95rem;
       margin-top: 20px;
-      color: #555;
+      color: #444;
     }
   </style>
 </head>
 <body>
   <div class="container">
+    <!-- Smaller but stylized Tesla Image -->
     <img src="https://content.homenetiol.com/2000292/2141007/0x0/d8ad7ca1e0e34c13aa7a93630d1578a7.jpg" alt="Tesla" class="tesla-img">
+
     <h1>Buy Me a Tesla</h1>
     <p>If you love what I do and want to support my dream, consider helping out. Every small contribution drives this vision forward 🚘</p>
 
@@ -109,7 +141,7 @@
     </div>
 
     <div id="crypto" class="payment-section">
-      <iframe src="https://nowpayments.io/embeds/donation-widget?api_key=WVWAD1M-E3RMP9H-PYWK7B7-SJGR5ZT" width="346" height="623" scrolling="no" style="overflow-y: hidden;">
+      <iframe src="https://nowpayments.io/embeds/donation-widget?api_key=WVWAD1M-E3RMP9H-PYWK7B7-SJGR5ZT" width="346" height="623" scrolling="no">
         Can't load widget
       </iframe>
     </div>
@@ -126,16 +158,14 @@
       sections.forEach(id => {
         const section = document.getElementById(id);
         section.classList.remove('visible');
-        setTimeout(() => {
-          section.style.display = 'none';
-        }, 500);
+        setTimeout(() => section.style.display = 'none', 400);
       });
 
       const target = document.getElementById(method);
       setTimeout(() => {
         target.style.display = 'block';
         setTimeout(() => target.classList.add('visible'), 50);
-      }, 500);
+      }, 400);
 
       if (method === 'card') {
         redirectToOnramper();
