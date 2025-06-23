@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Goodbye</title>
+  <base href="/goodbye/">
+  <link rel="icon" href="my_fav.png" type="image/png">
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    img.sad-img {
+      max-width: 320px;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      animation: float 2.5s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    h1 {
+      margin: 1rem 0 0.5rem;
+      color: #333;
+    }
+
+    p {
+      color: #555;
+      margin-bottom: 2rem;
+    }
+
+    input[type="email"] {
+      padding: 0.8rem;
+      width: 100%;
+      max-width: 300px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.8rem 1.2rem;
+      font-size: 1rem;
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #spinnerContainer {
+      display: none;
+      margin-top: 2rem;
+    }
+
+    .spinner {
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #007BFF;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    #typingText {
+      margin-top: 1rem;
+      font-size: 1rem;
+      color: #666;
+      min-height: 20px;
+    }
+
+    @keyframes typing {
+      from { width: 0 }
+      to { width: 100% }
+    }
+
+    #donation {
+      margin-top: 3rem;
+      opacity: 0;
+      transform: scale(0.95);
+      transition: all 0.5s ease;
+    }
+
+    #donation.show {
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    #donation img {
+      max-width: 150px;
+      margin-bottom: 1rem;
+      animation: pulse 1.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.07); }
+    }
+
+    .donation-buttons button {
+      background-color: #28a745;
+      margin: 0 10px;
+    }
+
+    .donation-buttons button:nth-child(2) {
+      background-color: #dc3545;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sad Black Boy Image -->
+  <img class="sad-img" src="https://media.istockphoto.com/id/1477512339/photo/child-arms-crossed-or-sad-portrait-on-isolated-red-background-for-depression-mental-health-or.jpg?s=612x612&w=0&k=20&c=6xLCIBtKF2hUH7iO5yAgLeNn0nqLkcIsFw63b2XfNAc=" alt="Sad Black Boy">
+
+  <h1>We're Sad to See You Go 😔</h1>
+  <p>Enter your email to unsubscribe from our mailing list.</p>
+
+  <input type="email" id="emailInput" placeholder="Enter your email" required />
+  <br>
+  <button onclick="handleUnsubscribe()">Confirm Unsubscribe</button>
+
+  <!-- Spinner + Typing text -->
+  <div id="spinnerContainer">
+    <div class="spinner"></div>
+    <div id="typingText"></div>
+  </div>
+
+  <!-- Tesla Donation Prompt -->
+  <div id="donation">
+    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq5K4I-qX9-HmtJbl38r0TF9VRVZvQ9YZAqA&s" alt="Tesla">
+    <h2>Lastly, before you go... 🚗⚡</h2>
+    <p>Why not buy me a Tesla?</p>
+    <div class="donation-buttons">
+      <button onclick="window.location.href='https://landing-pages.joetechworld.com/kindly-support'">Sure!</button>
+      <button onclick="showGoodbye()">I'm not interested</button>
+    </div>
+  </div>
+
+  <audio id="successSound" src="https://www.myinstants.com/media/sounds/success-fanfare-trumpets.mp3" preload="auto"></audio>
+
+  <script>
+    function handleUnsubscribe() {
+      const email = document.getElementById('emailInput').value;
+      if (!email || !email.includes('@')) {
+        alert("Please enter a valid email.");
+        return;
+      }
+
+      // Send request silently
+      fetch('https://script.google.com/macros/s/AKfycbwgOZ74owf2cCnlqcL75PyBy6kiG5YwPUW86EuEamPzg2nsykKUoK7ahus5EueHK6fHyQ/exec?email=' + encodeURIComponent(email));
+
+      // Hide input + button
+      document.getElementById("emailInput").style.display = "none";
+      document.querySelector("button").style.display = "none";
+
+      // Show spinner + typing
+      document.getElementById("spinnerContainer").style.display = "block";
+      typeText("typingText", "Hang on... Unsubscribing you");
+
+      // Wait 2 seconds then reveal donation
+      setTimeout(() => {
+        document.getElementById("spinnerContainer").style.display = "none";
+        document.getElementById("successSound").play();
+        document.getElementById("donation").classList.add("show");
+      }, 2000);
+    }
+
+    function typeText(elementId, text, speed = 60) {
+      const el = document.getElementById(elementId);
+      el.textContent = "";
+      let i = 0;
+      const typing = setInterval(() => {
+        el.textContent += text[i];
+        i++;
+        if (i >= text.length) clearInterval(typing);
+      }, speed);
+    }
+
+    function showGoodbye() {
+      alert("Thanks for your response!");
+      setTimeout(() => {
+        window.close();
+      }, 1000);
+    }
+  </script>
+
+</body>
+</html>
