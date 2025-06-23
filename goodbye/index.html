@@ -97,6 +97,16 @@
       to { width: 100% }
     }
 
+    #goodbyeSection {
+      transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+
+    #goodbyeSection.fade-out {
+      opacity: 0;
+      transform: translateY(-20px);
+      pointer-events: none;
+    }
+
     #donation {
       margin-top: 3rem;
       opacity: 0;
@@ -110,30 +120,39 @@
     }
 
     #donation img {
-      max-width: 150px;
-      margin-bottom: 1rem;
-      animation: pulse 1.5s infinite;
+    width: 100%;
+    max-width: 420px;
+    border-radius: 14px;
+    margin-bottom: 1rem;
+    animation: pulse 2s infinite ease-in-out;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.2);
     }
+
 
     @keyframes pulse {
       0%, 100% { transform: scale(1); }
       50% { transform: scale(1.07); }
     }
 
-    .donation-buttons button {
-      background-color: #28a745;
-      margin: 0 10px;
-    }
+  .donation-buttons button {
+    background-color: #28a745;
+    margin: 0 10px;
+    font-size: 1rem;
+    padding: 0.9rem 1.5rem;
+    border-radius: 8px;
+  }
 
-    .donation-buttons button:nth-child(2) {
-      background-color: #dc3545;
-    }
+  .donation-buttons button:nth-child(2) {
+    background-color: #dc3545;
+  }
+
   </style>
 </head>
 <body>
 
-  <!-- Sad Black Boy Image -->
-  <img class="sad-img" src="https://media.istockphoto.com/id/1477512339/photo/child-arms-crossed-or-sad-portrait-on-isolated-red-background-for-depression-mental-health-or.jpg?s=612x612&w=0&k=20&c=6xLCIBtKF2hUH7iO5yAgLeNn0nqLkcIsFw63b2XfNAc=" alt="Sad Black Boy">
+  <div id="goodbyeSection">
+  <!-- Sad Little Girl Image -->
+  <img class="sad-img" src="https://media.istockphoto.com/id/1477512339/photo/child-arms-crossed-or-sad-portrait-on-isolated-red-background-for-depression-mental-health-or.jpg?s=612x612&w=0&k=20&c=6xLCIBtKF2hUH7iO5yAgLeNn0nqLkcIsFw63b2XfNAc=" alt="Sad Little Girl">
 
   <h1>We're Sad to See You Go 😔</h1>
   <p>Enter your email to unsubscribe from our mailing list.</p>
@@ -141,6 +160,7 @@
   <input type="email" id="emailInput" placeholder="Enter your email" required />
   <br>
   <button onclick="handleUnsubscribe()">Confirm Unsubscribe</button>
+  </div>
 
   <!-- Spinner + Typing text -->
   <div id="spinnerContainer">
@@ -150,7 +170,7 @@
 
   <!-- Tesla Donation Prompt -->
   <div id="donation">
-    <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRq5K4I-qX9-HmtJbl38r0TF9VRVZvQ9YZAqA&s" alt="Tesla">
+    <img src="https://tsportline.com/cdn/shop/files/super-gloss-khaki-green-tesla-model-x-22-inch-tsv-aftermarket-wheels-satin-black-wm-1_a95f298c-90f5-4483-a70c-e15e936cb46f.jpg?v=1710278106" alt="Tesla">
     <h2>Lastly, before you go... 🚗⚡</h2>
     <p>Why not buy me a Tesla?</p>
     <div class="donation-buttons">
@@ -182,9 +202,18 @@
 
       // Wait 2 seconds then reveal donation
       setTimeout(() => {
-        document.getElementById("spinnerContainer").style.display = "none";
-        document.getElementById("successSound").play();
-        document.getElementById("donation").classList.add("show");
+      document.getElementById("spinnerContainer").style.display = "none";
+      document.getElementById("successSound").play();
+
+      // Hide sad boy section
+      document.getElementById("goodbyeSection").classList.add("fade-out");
+
+      // Show donation
+      const donationSection = document.getElementById("donation");
+      donationSection.classList.add("show");
+
+      // Scroll to Tesla
+      donationSection.scrollIntoView({ behavior: "smooth", block: "start" });
       }, 2000);
     }
 
