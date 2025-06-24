@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Message Me</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fff;
+      padding: 2rem;
+      margin: 0;
+      color: #333;
+      text-align: center;
+    }
+
+    form {
+      max-width: 400px;
+      margin: auto;
+      transition: opacity 0.4s ease;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+
+    button {
+      padding: 12px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      width: 100%;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #218838;
+    }
+
+    .success {
+      display: none;
+      font-size: 1.2rem;
+      color: #28a745;
+      margin-top: 20px;
+      animation: fadeIn 0.8s ease-in-out forwards;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <form id="contactForm" action="https://formspree.io/f/xdkzpnyn" method="POST" onsubmit="return handleSubmit(event)">
+    <input type="text" name="name" placeholder="Your Name" required />
+    <input type="email" name="_replyto" placeholder="Your Email" required />
+    <textarea name="message" placeholder="Write me a message..." required></textarea>
+    <button type="submit">Send Message</button>
+  </form>
+
+  <div class="success" id="successMessage">🎉 Message Sent! Thank you ❤️</div>
+
+  <script>
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = event.target;
+      const success = document.getElementById('successMessage');
+
+      fetch(form.action, {
+        method: 'POST',
+        body: new FormData(form),
+        headers: { 'Accept': 'application/json' }
+      }).then(() => {
+        form.style.opacity = '0';
+        setTimeout(() => {
+          form.style.display = 'none';
+          success.style.display = 'block';
+
+          // Delay before closing
+          setTimeout(() => {
+            if (window.parent && window.parent.postMessage) {
+              window.parent.postMessage({ closeFormSmooth: true }, "*");
+            }
+          }, 3000);
+        }, 400);
+      }).catch(() => {
+        success.textContent = 'Oops! Something went wrong. Try again.';
+        success.style.color = '#d33';
+        success.style.display = 'block';
+      });
+
+      return false;
+    }
+  </script>
+</body>
+</html>
