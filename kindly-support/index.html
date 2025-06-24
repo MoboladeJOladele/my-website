@@ -35,6 +35,7 @@
       padding: 0;
       box-sizing: border-box;
     }
+
     body {
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       background-color: #f9f9f9;
@@ -129,13 +130,6 @@
       color: #333;
     }
 
-    .usdt-reminder {
-      font-size: 0.95rem;
-      margin-top: 20px;
-      color: #444;
-    }
-
-    /* Paystack demo style */
     .paystack-demo-box {
       background-color: #fff;
       padding: 2rem;
@@ -171,56 +165,60 @@
       margin-bottom: 10px;
     }
 
-    .hidden-form {
+    .iframe-wrapper {
       display: none;
-      max-width: 400px;
-      margin: 0 auto;
-      text-align: left;
+      opacity: 0;
+      max-width: 100%;
+      margin-top: 20px;
+      transition: all 0.6s ease;
     }
 
-    .hidden-form input,
-    .hidden-form textarea {
+    .iframe-wrapper.show {
+      display: block;
+      opacity: 1;
+      animation: fadeSlideUp 0.6s ease forwards;
+    }
+
+    .iframe-wrapper iframe {
       width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
+      max-width: 420px;
+      height: 520px;
+      border: none;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        transform: translateY(40px);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    .message-btn {
+      padding: 10px 20px;
+      font-size: 0.95rem;
       border-radius: 6px;
-      font-size: 1rem;
-    }
-
-    .hidden-form button {
-      width: 100%;
-      padding: 12px;
-      font-size: 1rem;
-      background-color: #28a745;
+      background-color: #007BFF;
       color: white;
       border: none;
-      border-radius: 6px;
       cursor: pointer;
+      transition: background-color 0.3s ease, transform 0.2s ease;
     }
 
-    .hidden-form button:hover {
-      background-color: #218838;
-    }
-
-    #emailForm {
-      opacity: 0;
-      height: 0;
-      overflow: hidden;
-      transition: all 0.4s ease;
-    }
-
-    #emailForm.show {
-      opacity: 1;
-      height: auto;
-      margin-top: 10px;
+    .message-btn:hover {
+      background-color: #0056b3;
+      transform: translateY(-2px);
     }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Tesla Image -->
-    <img src="https://content.homenetiol.com/2000292/2141007/0x0/d8ad7ca1e0e34c13aa7a93630d1578a7.jpg" alt="Tesla" class="tesla-img">
+    <img src="https://content.homenetiol.com/2000292/2141007/0x0/d8ad7ca1e0e34c13aa7a93630d1578a7.jpg" alt="Tesla" class="tesla-img" />
 
     <h1>Buy Me a Tesla</h1>
     <p>If you love what I do and want to support my dream, consider helping out. Every small contribution drives this vision forward 🚘</p>
@@ -230,7 +228,6 @@
       <button onclick="togglePayment('crypto')">Pay with Crypto</button>
     </div>
 
-    <!-- Paystack Placeholder (hidden) -->
     <div id="card" class="payment-section">
       <div class="paystack-demo-box">
         <h3>Paystack Integration Coming Soon</h3>
@@ -239,7 +236,6 @@
       </div>
     </div>
 
-    <!-- Active Crypto Widget -->
     <div id="crypto" class="payment-section">
       <iframe src="https://nowpayments.io/embeds/donation-widget?api_key=WVWAD1M-E3RMP9H-PYWK7B7-SJGR5ZT" width="346" height="623" scrolling="no">
         Can't load widget
@@ -252,14 +248,14 @@
     </div>
 
     <div class="email-fallback">
-      <p class="fallback-note">Don’t have crypto or card? <a href="#" onclick="toggleEmailForm()">Send me an email instead</a>.</p>
+      <p class="fallback-note">
+        Don’t have crypto or card?
+        <button class="message-btn" onclick="toggleMessageForm()">Send me a message</button>
+      </p>
 
-      <form id="emailForm" class="hidden-form" action="https://formspree.io/f/xdkzpnyn" method="POST">
-        <input type="text" name="name" placeholder="Your Name" required>
-        <input type="email" name="_replyto" placeholder="Your Email" required>
-        <textarea name="message" placeholder="Write me a message..." required></textarea>
-        <button type="submit">Send Email</button>
-      </form>
+      <div id="messageWrapper" class="iframe-wrapper">
+        <iframe src="message.html" title="Contact Form"></iframe>
+      </div>
     </div>
   </div>
 
@@ -279,12 +275,32 @@
       }, 400);
     }
 
-  function toggleEmailForm() {
-    const form = document.getElementById('emailForm');
-    form.classList.toggle('show');
-  }
+    function toggleMessageForm() {
+      const wrapper = document.getElementById('messageWrapper');
+      wrapper.classList.add('show');
+      wrapper.scrollIntoView({ behavior: 'smooth' });
+    }
 
+    window.addEventListener("message", function(event) {
+      if (event.data && event.data.closeFormSmooth) {
+        const wrapper = document.getElementById('messageWrapper');
+        wrapper.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        wrapper.style.opacity = '1';
+        wrapper.style.transform = 'translateY(0)';
 
+        requestAnimationFrame(() => {
+          wrapper.style.opacity = '0';
+          wrapper.style.transform = 'translateY(40px)';
+        });
+
+        setTimeout(() => {
+          wrapper.classList.remove('show');
+          wrapper.style.opacity = '';
+          wrapper.style.transform = '';
+          wrapper.style.transition = '';
+        }, 700);
+      }
+    });
   </script>
 </body>
 </html>
