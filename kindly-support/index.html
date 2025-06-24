@@ -5,7 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buy Me a Tesla</title>
   <base href="/kindly-support/">
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg" type="image/png">
+  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/b/bd/Tesla_Motors.svg?v=20250624" type="image/png">
+
+  <!-- Versioned Cache Buster -->
+  <script>
+    const today = new Date();
+    const version = today.getFullYear().toString()
+                  + String(today.getMonth() + 1).padStart(2, '0')
+                  + String(today.getDate()).padStart(2, '0');
+    document.addEventListener('DOMContentLoaded', () => {
+      const style = document.createElement('link');
+      style.rel = 'stylesheet';
+      style.href = `styles.css?v=${version}`;
+      document.head.appendChild(style);
+
+      const script = document.createElement('script');
+      script.src = `main.js?v=${version}`;
+      document.body.appendChild(script);
+
+      document.querySelectorAll('img').forEach(img => {
+        img.src += `?v=${version}`;
+      });
+    });
+  </script>
 
   <style>
     * {
@@ -78,15 +100,6 @@
       transform: translateY(-2px);
     }
 
-    .donation-buttons button {
-      background-color: #28a745;
-      margin: 0 10px;
-    }
-
-    .donation-buttons button:nth-child(2) {
-      background-color: #dc3545;
-    }
-
     .payment-section {
       display: none;
       opacity: 0;
@@ -121,11 +134,92 @@
       margin-top: 20px;
       color: #444;
     }
+
+    /* Paystack demo style */
+    .paystack-demo-box {
+      background-color: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
+      max-width: 400px;
+      margin: 0 auto;
+      color: #222;
+    }
+
+    .paystack-demo-box h3 {
+      margin-bottom: 1rem;
+    }
+
+    .paystack-demo-box p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .paystack-demo-box small {
+      display: block;
+      margin-top: 1rem;
+      color: #999;
+    }
+
+    .email-fallback {
+      margin-top: 40px;
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .fallback-note {
+      margin-bottom: 10px;
+    }
+
+    .hidden-form {
+      display: none;
+      max-width: 400px;
+      margin: 0 auto;
+      text-align: left;
+    }
+
+    .hidden-form input,
+    .hidden-form textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .hidden-form button {
+      width: 100%;
+      padding: 12px;
+      font-size: 1rem;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .hidden-form button:hover {
+      background-color: #218838;
+    }
+
+    #emailForm {
+      opacity: 0;
+      height: 0;
+      overflow: hidden;
+      transition: all 0.4s ease;
+    }
+
+    #emailForm.show {
+      opacity: 1;
+      height: auto;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <div class="container">
-    <!-- Smaller but stylized Tesla Image -->
+    <!-- Tesla Image -->
     <img src="https://content.homenetiol.com/2000292/2141007/0x0/d8ad7ca1e0e34c13aa7a93630d1578a7.jpg" alt="Tesla" class="tesla-img">
 
     <h1>Buy Me a Tesla</h1>
@@ -136,10 +230,16 @@
       <button onclick="togglePayment('crypto')">Pay with Crypto</button>
     </div>
 
-    <div id="card" class="payment-section visible">
-      <p class="usdt-reminder">Please make sure to select <strong>USDT (Tether)</strong> as the cryptocurrency during payment.</p>
+    <!-- Paystack Placeholder (hidden) -->
+    <div id="card" class="payment-section">
+      <div class="paystack-demo-box">
+        <h3>Paystack Integration Coming Soon</h3>
+        <p>Payments via card, bank, or transfer will be enabled here.</p>
+        <small>This is just a preview of what will be added soon.</small>
+      </div>
     </div>
 
+    <!-- Active Crypto Widget -->
     <div id="crypto" class="payment-section">
       <iframe src="https://nowpayments.io/embeds/donation-widget?api_key=WVWAD1M-E3RMP9H-PYWK7B7-SJGR5ZT" width="346" height="623" scrolling="no">
         Can't load widget
@@ -149,6 +249,17 @@
     <div class="wallet-instructions">
       Your donation will be sent to:<br>
       <span class="wallet-address">TMqHoZQmKj6Qw8vkYVao2WkGFRmVipCyDA (USDT - BEP20)</span>
+    </div>
+
+    <div class="email-fallback">
+      <p class="fallback-note">Don’t have crypto or card? <a href="#" onclick="toggleEmailForm()">Send me an email instead</a>.</p>
+
+      <form id="emailForm" class="hidden-form" action="https://formspree.io/f/xdkzpnyn" method="POST">
+        <input type="text" name="name" placeholder="Your Name" required>
+        <input type="email" name="_replyto" placeholder="Your Email" required>
+        <textarea name="message" placeholder="Write me a message..." required></textarea>
+        <button type="submit">Send Email</button>
+      </form>
     </div>
   </div>
 
@@ -166,18 +277,14 @@
         target.style.display = 'block';
         setTimeout(() => target.classList.add('visible'), 50);
       }, 400);
-
-      if (method === 'card') {
-        redirectToOnramper();
-      }
     }
 
-    function redirectToOnramper() {
-      const confirmRedirect = confirm("You'll be redirected to a secure payment page to complete your donation. Continue?");
-      if (confirmRedirect) {
-        window.open("https://buy.onramper.com?wallets=TMqHoZQmKj6Qw8vkYVao2WkGFRmVipCyDA&defaultCrypto=USDT&defaultFiat=NGN", "_blank");
-      }
-    }
+  function toggleEmailForm() {
+    const form = document.getElementById('emailForm');
+    form.classList.toggle('show');
+  }
+
+
   </script>
 </body>
 </html>
